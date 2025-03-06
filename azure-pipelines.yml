@@ -1,0 +1,23 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  imageName: 'your-docker-image-name'
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.x'
+    addToPath: true
+
+- script: |
+    docker build -t $(imageName) .
+  displayName: 'Build Docker image'
+
+- script: |
+    docker login -u $(dockerUsername) -p $(dockerPassword)
+    docker push $(imageName)
+  displayName: 'Push Docker image'
